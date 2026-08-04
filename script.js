@@ -1,15 +1,10 @@
-var map = L.map('map').setView([64.96, 27.59], 6);
-
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+const map = L.map('map');
 
 
 fetch("kunta4500k_wgs84.geojson")
     .then(response => response.json())
     .then(data => {
-        L.geoJSON(data, {
+       const kunnat =  L.geoJSON(data, {
     style: function(feature) {
         return {
             color: "black",
@@ -34,7 +29,7 @@ fetch("kunta4500k_wgs84.geojson")
     }
 }).addTo(map);
     });
-
+map.fitBounds(kunnat.getBounds());
 //tyhjä lista onko vierailtu
 const kaydyt = {};
-
+console.log(kaydyt);
