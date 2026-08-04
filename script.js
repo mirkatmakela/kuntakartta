@@ -1,4 +1,5 @@
 var map = L.map('map').setView([64.96, 27.59], 3);
+consol.log("taalla ollaan");
 
 //L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   //  maxZoom: 19,
