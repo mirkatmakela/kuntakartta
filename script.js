@@ -19,18 +19,22 @@ fetch("kunta4500k_wgs84.geojson")
         };
     }, 
     onEachFeature: function(feature, layer) {
-        // tähän tulee klikkaustoiminto
+        const koodi = feature.properties.kunta;
         layer.bindPopup(feature.properties.nimi);
         layer.on("click", function() {
-        visited[feature.properties.kunta] = true;
+        if (!kaydyt[koodi]) {
+        kaydyt[koodi] = {
+            paiva: new Date().toLocaleDateString("fi-FI")}
+        }
         layer.setStyle({
-        weight: 5,
-        color: '#666'});
+        weight: 3,
+        color: '#666',
+        fillColor: "blue"});
         });
     }
 }).addTo(map);
     });
 
 //tyhjä lista onko vierailtu
-const visited = {};
+const kaydyt = {};
 
