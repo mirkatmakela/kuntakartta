@@ -20,7 +20,7 @@ fetch("kunta4500k_wgs84.geojson")
     }, 
     onEachFeature: function(feature, layer) {
         // tähän tulee klikkaustoiminto
-        layer.bindPopup("toimii");
+        layer.bindPopup(feature.properties.nimi);
     }
 }).addTo(map);
     });
