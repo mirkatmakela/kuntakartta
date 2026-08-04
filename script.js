@@ -10,7 +10,16 @@ var marker = L.marker([65.0, 25.5]).addTo(map);
 fetch("kunta4500k_wgs84.geojson")
     .then(response => response.json())
     .then(data => {
-        L.geoJSON(data).addTo(map);
+        L.geoJSON(data, {
+    style: function(feature) {
+        return {
+            color: "black",
+            weight: 1,
+            fillColor: "lightgreen",
+            fillOpacity: 0.5
+        };
+    }
+}).addTo(map);
     });
 
 var popup = L.popup();
