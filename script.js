@@ -21,7 +21,6 @@ fetch("kunta4500k_wgs84.geojson")
     }, 
     onEachFeature: function(feature.properties.nimi, layer) {
         // tähän tulee klikkaustoiminto
-        popup
         layer.on.bindPopup("Olen kunta");
     }
 }).addTo(map);
