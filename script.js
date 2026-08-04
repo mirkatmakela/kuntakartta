@@ -1,3 +1,5 @@
+alert("JavaScript toimii");
+
 var map = L.map('map').setView([64.96, 27.59], 7);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
