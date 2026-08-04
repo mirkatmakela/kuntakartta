@@ -1,3 +1,5 @@
+console.log("ohjelma kaynnistyi");
+
 const map = L.map('map');
 
 
@@ -17,6 +19,7 @@ fetch("kunta4500k_wgs84.geojson")
         const koodi = feature.properties.kunta;
         layer.bindPopup(feature.properties.nimi);
         layer.on("click", function() {
+            console.log("klikattiin");
         if (!kaydyt[koodi]) {
         kaydyt[koodi] = {
             paiva: new Date().toLocaleDateString("fi-FI")}
@@ -33,4 +36,5 @@ fetch("kunta4500k_wgs84.geojson")
 
 //tyhjä lista onko vierailtu
 const kaydyt = {};
+console.log("paastiin loppuun");
 console.log(kaydyt);
