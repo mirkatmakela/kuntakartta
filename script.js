@@ -6,3 +6,5 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 var marker = L.marker([65.0, 25.5]).addTo(map);
+
+console.log("Hei konsoli");
