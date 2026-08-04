@@ -1,10 +1,10 @@
 var map = L.map('map').setView([64.96, 27.59], 3);
 console.log("taalla ollaan");
 
-//L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  //  maxZoom: 19,
-   // attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-//}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
 
 
 fetch("kunta4500k_wgs84.geojson")
