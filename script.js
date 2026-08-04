@@ -18,6 +18,11 @@ fetch("kunta4500k_wgs84.geojson")
             fillColor: "lightgreen",
             fillOpacity: 0.5
         };
+    }, 
+    onEachFeature: function(feature.properties.nimi, layer) {
+        // tähän tulee klikkaustoiminto
+        popup
+        layer.on.bindPopup("Olen kunta");
     }
 }).addTo(map);
     });
