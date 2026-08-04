@@ -1,4 +1,4 @@
-alert("hei");
+alert("script.js toimii");
     
 var map = L.map('map').setView([64.96, 27.59], 6);
 
@@ -9,5 +9,3 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 var marker = L.marker([65.0, 25.5]).addTo(map);
 
-console.log("Hei konsoli");
-console.error("testi");
