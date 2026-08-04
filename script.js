@@ -5,7 +5,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-var marker = L.marker([65.0, 25.5]).addTo(map);
 
 fetch("kunta4500k_wgs84.geojson")
     .then(response => response.json())
