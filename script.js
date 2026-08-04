@@ -27,7 +27,7 @@ fetch("kunta4500k_wgs84.geojson")
         layer.setStyle({
         weight: 3,
         color: '#666',
-        fillColor: "blue"});
+        fillColor: "red"});
         });
     }
 }).addTo(map);
