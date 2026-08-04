@@ -19,9 +19,9 @@ fetch("kunta4500k_wgs84.geojson")
             fillOpacity: 0.5
         };
     }, 
-    onEachFeature: function(feature.properties.nimi, layer) {
+    onEachFeature: function(feature, layer) {
         // tähän tulee klikkaustoiminto
-        layer.on.bindPopup("Olen kunta");
+        layer.bindPopup(feature.properties.nimi);
     }
 }).addTo(map);
     });
