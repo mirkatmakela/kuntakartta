@@ -21,6 +21,13 @@ fetch("kunta4500k_wgs84.geojson")
     onEachFeature: function(feature, layer) {
         // tähän tulee klikkaustoiminto
         layer.bindPopup(feature.properties.nimi);
+        layer.on("click", function() {
+        visited[feature.properties.kunta] = true;
+        });
     }
 }).addTo(map);
     });
+
+//tyhjä lista onko vierailtu
+const visited = {};
+
