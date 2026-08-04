@@ -1,1 +1,9 @@
 #map { height: 500px; }
+
+head {
+  background-color: #FFE4C4;
+  color: #D2691E;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
