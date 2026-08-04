@@ -28,8 +28,9 @@ fetch("kunta4500k_wgs84.geojson")
         });
     }
 }).addTo(map);
-    });
-map.fitBounds(kunnat.getBounds());
+        map.fitBounds(kunnat.getBounds());
+    })
+
 //tyhjä lista onko vierailtu
 const kaydyt = {};
 console.log(kaydyt);
