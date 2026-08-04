@@ -23,6 +23,9 @@ fetch("kunta4500k_wgs84.geojson")
         layer.bindPopup(feature.properties.nimi);
         layer.on("click", function() {
         visited[feature.properties.kunta] = true;
+        layer.setStyle({
+        weight: 5,
+        color: '#666'});
         });
     }
 }).addTo(map);
