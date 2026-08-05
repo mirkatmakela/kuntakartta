@@ -44,16 +44,25 @@ function alustaKunta(feature, layer) {
     layer.bindPopup(feature.properties.nimi);
     layer.on("click", function() {
             
-    if (!kaydyt[koodi]) {
-        if (confirm("Merkitäänkö " + feature.properties.nimi + " käydyksi?")) {
-            kaydyt[koodi] = {
-            paiva: new Date().toLocaleDateString("fi-FI")}
-            localStorage.setItem("kaydyt", JSON.stringify(kaydyt));
-            layer.setStyle(kuntavarit(feature));
+        if (!kaydyt[koodi]) {
+            if (confirm("Merkitäänkö " + feature.properties.nimi + " käydyksi?")) {
+                kaydyt[koodi] = {
+                paiva: new Date().toLocaleDateString("fi-FI")}
+                tallennaKaydyt();
+                layer.setStyle(kuntavarit(feature));
+            }
+        } else {
+            if (confirm("Haluatko poistaa merkinnän " + feature.properties.nimi + "?")) {
+                delete kaydyt[koodi];
+                tallennaKaydyt();
+                layer.setStyle(kuntavarit(feature));
+            }
         }
-    }
-    
     });
+}
+
+function tallennaKaydyt() {
+    localStorage.setItem("kaydyt", JSON.stringify(kaydyt));
 }
 
 //ohjelma alkaa tästä
