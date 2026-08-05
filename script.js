@@ -1,7 +1,26 @@
-//console.log("ohjelma kaynnistyi");
+/*
+  Suomen kuntakartta - kommentoitu toiminto
+
+  Tämä skripti lataa GeoJSON-tiedoston, piirtää Suomen kuntien rajat
+  Leaflet-kartalle ja kertoo, mitkä kunnat on klikattu aiemmin.
+
+  - `map` luo Leaflet-kartan elementtiin #map.
+  - `kaydyt` hakee selaimen localStorage:sta tallennetun olion,
+    jossa seurataan klikattuja kuntia, ja alustaa sen tyhjäksi
+    jos tietoja ei vielä ole.
+  - `kuntavarit` määrittelee kunkin kunnan tyylin: vihreä varattu
+    tila on klikattujen kuntien kohdalla, punainen oletustila.
+  - `alustaKunta` liittää popupin ja klikkitapahtuman jokaiselle
+    kunnan polygonille. Klikkauksen jälkeen kunta merkitään käydyksi,
+    tallennetaan localStorageen ja sen tyyli päivitetään.
+  - Lopuksi GeoJSON-data ladataan `fetch`-kutsulla, luodaan GeoJSON-kerros
+    ja sovitetaan kartan näkymä kaikkien kuntien rajojen mukaan.
+*/
 
 const map = L.map('map');
+//paikallinen muisti johon tallennetaan olio, jossa käydyt kunnat
 let kaydyt = JSON.parse(localStorage.getItem("kaydyt")) || {};
+
 
 function kuntavarit(feature) {
     if (kaydyt[feature.properties.kunta]) {
@@ -20,29 +39,34 @@ function kuntavarit(feature) {
     }
 }
 
+function alustaKunta(feature, layer) {
+    const koodi = feature.properties.kunta;
+    layer.bindPopup(feature.properties.nimi);
+    layer.on("click", function() {
+            
+    if (!kaydyt[koodi]) {
+        if (confirm("Merkitäänkö " + feature.properties.nimi + " käydyksi?")) {
+            kaydyt[koodi] = {
+            paiva: new Date().toLocaleDateString("fi-FI")}
+            localStorage.setItem("kaydyt", JSON.stringify(kaydyt));
+            layer.setStyle(kuntavarit(feature));
+        }
+    }
+    
+    });
+}
+
+//ohjelma alkaa tästä
 fetch("kunta4500k_wgs84.geojson")
     .then(response => response.json())
     .then(data => {
        const kunnat =  L.geoJSON(data, {
     style: kuntavarit, 
-    onEachFeature: function(feature, layer) {
-        const koodi = feature.properties.kunta;
-        layer.bindPopup(feature.properties.nimi);
-        layer.on("click", function() {
-            
-        if (!kaydyt[koodi]) {
-        kaydyt[koodi] = {
-            paiva: new Date().toLocaleDateString("fi-FI")}
-        layer.setStyle(kuntavarit(feature));
-        }
-        localStorage.setItem("kaydyt", JSON.stringify(kaydyt))
-
-        });
-    }
+    onEachFeature: alustaKunta
 }).addTo(map);
         map.fitBounds(kunnat.getBounds());
     })
 
-
+//testi, että ohjelma päästiin loppuun:
 //console.log("paastiin loppuun");
 
