@@ -25,6 +25,21 @@ let kunnatKartalla;
 let kaydyt = JSON.parse(localStorage.getItem("kaydyt")) || {};
 const tyhjennysnappi = document.getElementById("tyhjennysnappi");
 tyhjennysnappi.addEventListener("click", tyhjenna);
+const haku = document.getElementById("haku");
+haku.addEventListener("input", etsiKuntaa);
+
+function etsiKuntaa() {
+    const hakuarvo = haku.value.toLowerCase();
+    const layerit = kunnatKartalla.getLayers();
+
+    const kuntaLoytyi = layerit.find(function(layer) {
+    const kunnanNimi = layer.feature.properties.nimi.toLowerCase();
+    return kunnanNimi === hakuarvo;
+});
+    if (kuntaLoytyi) {
+        map.flyToBounds(kuntaLoytyi.getBounds());
+    }
+}
 
 function kuntavarit(feature) {
     if (kaydyt[feature.properties.kunta]) {
@@ -82,10 +97,17 @@ function alustaKunta(feature, layer) {
             }
         }
         tallennaKaydyt();
-        layer.setStyle(kuntavarit(feature));
+        paivitaKunta(feature, layer);
         paivitaLaskuri();
-        paivitaPopup(feature, layer);
     });
+}
+
+function paivitaKunta(feature, layer) {
+    //paivittaa värin kartalle
+    layer.setStyle(kuntavarit(feature));
+
+    //paivittaa popupin
+    paivitaPopup(feature, layer);
 }
 
 function tallennaKaydyt() {
@@ -98,8 +120,7 @@ function tyhjenna() {
         tallennaKaydyt();
         paivitaLaskuri();
         kunnatKartalla.eachLayer(layer => {
-            layer.setStyle(kuntavarit(layer.feature));
-            layer.bindPopup(layer.feature.properties.nimi);
+            paivitaKunta(layer.feature, layer);
         });
     }
 }
