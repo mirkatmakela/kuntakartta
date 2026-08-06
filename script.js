@@ -18,6 +18,7 @@
 */
 
 const map = L.map('map');
+const kuntienLkm = document.getElementById("kuntienLkm");
 //paikallinen muisti johon tallennetaan olio, jossa käydyt kunnat
 let kaydyt = JSON.parse(localStorage.getItem("kaydyt")) || {};
 
@@ -39,25 +40,37 @@ function kuntavarit(feature) {
     }
 }
 
+function paivitaLaskuri() {
+    const laskuri = document.getElementById("laskuri");
+    laskuri.textContent = Object.keys(kaydyt).length;
+}
+
 function alustaKunta(feature, layer) {
     const koodi = feature.properties.kunta;
+    //liittää kuntaan popupin
     layer.bindPopup(feature.properties.nimi);
+    //avaa popupin kun hiiri menee päälle
+    layer.on("mouseover", function() {
+        layer.openPopup();
+    });
+    layer.on("mouseout", function() {
+        layer.closePopup();
+    });
     layer.on("click", function() {
             
         if (!kaydyt[koodi]) {
             if (confirm("Merkitäänkö " + feature.properties.nimi + " käydyksi?")) {
                 kaydyt[koodi] = {
                 paiva: new Date().toLocaleDateString("fi-FI")}
-                tallennaKaydyt();
-                layer.setStyle(kuntavarit(feature));
             }
         } else {
             if (confirm("Haluatko poistaa merkinnän " + feature.properties.nimi + "?")) {
                 delete kaydyt[koodi];
-                tallennaKaydyt();
-                layer.setStyle(kuntavarit(feature));
             }
         }
+        tallennaKaydyt();
+        layer.setStyle(kuntavarit(feature));
+        paivitaLaskuri();
     });
 }
 
@@ -74,6 +87,8 @@ fetch("kunta4500k_wgs84.geojson")
     onEachFeature: alustaKunta
 }).addTo(map);
         map.fitBounds(kunnat.getBounds());
+        kuntienLkm.textContent = data.features.length;
+        paivitaLaskuri();
     })
 
 //testi, että ohjelma päästiin loppuun:
