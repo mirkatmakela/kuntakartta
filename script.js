@@ -19,9 +19,12 @@
 
 const map = L.map('map');
 const kuntienLkm = document.getElementById("kuntienLkm");
+//Tähän tallennetaan kuntien rajat, jotta voidaan myöhemmin käyttää layereita
+let kunnatKartalla;
 //paikallinen muisti johon tallennetaan olio, jossa käydyt kunnat
 let kaydyt = JSON.parse(localStorage.getItem("kaydyt")) || {};
-
+const tyhjennysnappi = document.getElementById("tyhjennysnappi");
+tyhjennysnappi.addEventListener("click", tyhjenna);
 
 function kuntavarit(feature) {
     if (kaydyt[feature.properties.kunta]) {
@@ -89,6 +92,18 @@ function tallennaKaydyt() {
     localStorage.setItem("kaydyt", JSON.stringify(kaydyt));
 }
 
+function tyhjenna() {
+    if (confirm("Haluatko tyhjentää kaikki merkinnät?")) {
+        kaydyt = {};
+        tallennaKaydyt();
+        paivitaLaskuri();
+        kunnatKartalla.eachLayer(layer => {
+            layer.setStyle(kuntavarit(layer.feature));
+            layer.bindPopup(layer.feature.properties.nimi);
+        });
+    }
+}
+
 //ohjelma alkaa tästä
 fetch("kunta4500k_wgs84.geojson")
     .then(response => response.json())
@@ -98,12 +113,12 @@ fetch("kunta4500k_wgs84.geojson")
         paivitaLaskuri();
 
         //luodaan kuntien rajat kartalle
-        const kunnat =  L.geoJSON(data, {
+        kunnatKartalla =  L.geoJSON(data, {
             style: kuntavarit, 
             onEachFeature: alustaKunta
         }).addTo(map);
         //sovitetaan kartan näkymä kuntien rajojen mukaan
-        map.fitBounds(kunnat.getBounds());
+        map.fitBounds(kunnatKartalla.getBounds());
     })
 
 //testi, että ohjelma päästiin loppuun:
