@@ -45,10 +45,20 @@ function paivitaLaskuri() {
     laskuri.textContent = Object.keys(kaydyt).length;
 }
 
+function paivitaPopup(feature, layer) {
+    const koodi = feature.properties.kunta;
+    if (!kaydyt[koodi]) {
+        layer.bindPopup(feature.properties.nimi);
+    } else {
+        layer.bindPopup(feature.properties.nimi + "<br>käyty: " + kaydyt[koodi].paiva);
+    }
+}
+
 function alustaKunta(feature, layer) {
     const koodi = feature.properties.kunta;
     //liittää kuntaan popupin
-    layer.bindPopup(feature.properties.nimi);
+    //jos käyty, näytä myös pvm
+    paivitaPopup(feature, layer);
     //avaa popupin kun hiiri menee päälle
     layer.on("mouseover", function() {
         layer.openPopup();
@@ -71,6 +81,7 @@ function alustaKunta(feature, layer) {
         tallennaKaydyt();
         layer.setStyle(kuntavarit(feature));
         paivitaLaskuri();
+        paivitaPopup(feature, layer);
     });
 }
 
@@ -82,13 +93,17 @@ function tallennaKaydyt() {
 fetch("kunta4500k_wgs84.geojson")
     .then(response => response.json())
     .then(data => {
-       const kunnat =  L.geoJSON(data, {
-    style: kuntavarit, 
-    onEachFeature: alustaKunta
-}).addTo(map);
-        map.fitBounds(kunnat.getBounds());
+        //kuntienLkm on span-elementti, johon kirjoitetaan kuntien lukumäärä
         kuntienLkm.textContent = data.features.length;
         paivitaLaskuri();
+
+        //luodaan kuntien rajat kartalle
+        const kunnat =  L.geoJSON(data, {
+            style: kuntavarit, 
+            onEachFeature: alustaKunta
+        }).addTo(map);
+        //sovitetaan kartan näkymä kuntien rajojen mukaan
+        map.fitBounds(kunnat.getBounds());
     })
 
 //testi, että ohjelma päästiin loppuun:
