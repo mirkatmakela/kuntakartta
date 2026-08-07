@@ -79,6 +79,8 @@ function kuntavarit(feature) {
 function paivitaLaskuri() {
     const laskuri = document.getElementById("laskuri");
     laskuri.textContent = Object.keys(kaydyt).length;
+    const prosentit = document.getElementById("prosentit");
+    prosentit.textContent = Math.round((Object.keys(kaydyt).length / parseInt(kuntienLkm.textContent) * 100));
 }
 
 function paivitaPopup(feature, layer) {
