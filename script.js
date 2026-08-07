@@ -32,6 +32,8 @@ haku.addEventListener("keydown", function(event) {
         etsiKuntaa();
     }
 });
+const hakuNappi = document.getElementById("hakuNappi");
+hakuNappi.addEventListener("click", etsiKuntaa);
 
 function etsiKuntaa() {
     const hakuarvo = haku.value.toLowerCase();
