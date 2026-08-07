@@ -1,5 +1,5 @@
 /*
-  Suomen kuntakartta - kommentoitu toiminto
+  Suomen kuntakartta
 
   Tämä skripti lataa GeoJSON-tiedoston, piirtää Suomen kuntien rajat
   Leaflet-kartalle ja kertoo, mitkä kunnat on klikattu aiemmin.
@@ -23,21 +23,37 @@ const kuntienLkm = document.getElementById("kuntienLkm");
 let kunnatKartalla;
 //paikallinen muisti johon tallennetaan olio, jossa käydyt kunnat
 let kaydyt = JSON.parse(localStorage.getItem("kaydyt")) || {};
+let korostettuKunta = null;
 const tyhjennysnappi = document.getElementById("tyhjennysnappi");
 tyhjennysnappi.addEventListener("click", tyhjenna);
 const haku = document.getElementById("haku");
-haku.addEventListener("input", etsiKuntaa);
+haku.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        etsiKuntaa();
+    }
+});
 
 function etsiKuntaa() {
     const hakuarvo = haku.value.toLowerCase();
     const layerit = kunnatKartalla.getLayers();
 
-    const kuntaLoytyi = layerit.find(function(layer) {
+    const loydetynLayer = layerit.find(function(layer) {
     const kunnanNimi = layer.feature.properties.nimi.toLowerCase();
-    return kunnanNimi === hakuarvo;
+    return kunnanNimi.includes(hakuarvo);
 });
-    if (kuntaLoytyi) {
-        map.flyToBounds(kuntaLoytyi.getBounds());
+    if (loydetynLayer) {
+       //map.flyToBounds(loydetynLayer.getBounds());
+        //loydetynLayer.zoomOut(2);
+        //muutetaan aiemmin korostettu normiväreihin jos se ei ole null
+        if (korostettuKunta) {
+        korostettuKunta.setStyle(kuntavarit(korostettuKunta.feature));
+        }
+        korostettuKunta = loydetynLayer;
+        korostettuKunta.setStyle({
+            fillColor: "blue",
+            fillOpacity: 0.7
+        });
+        loydetynLayer.openPopup();
     }
 }
 
