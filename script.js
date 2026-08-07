@@ -88,7 +88,10 @@ function paivitaPopup(feature, layer) {
     if (!kaydyt[koodi]) {
         layer.bindPopup(feature.properties.nimi);
     } else {
-        layer.bindPopup(feature.properties.nimi + "<br>käyty: " + kaydyt[koodi].paiva);
+        layer.bindPopup(feature.properties.nimi + 
+            "<br>Käyty: " + kaydyt[koodi].paiva +
+        "<br><button id='muokkaaPvm'>Muokkaa</button>" +
+        "<br><button id='poistaMerkinta'>Poista</button>");
     }
 }
 
@@ -97,6 +100,29 @@ function alustaKunta(feature, layer) {
     //liittää kuntaan popupin
     //jos käyty, näytä myös pvm
     paivitaPopup(feature, layer);
+    //tapahtumakuuntelija kun popup auki
+    layer.on("popupopen", function() {
+        const muokkaaPvmNappi = document.getElementById("muokkaaPvm");
+        if (muokkaaPvmNappi) {
+            muokkaaPvmNappi.addEventListener("click", function() {
+                kaydyt[koodi].paiva = prompt("Anna uusi päivämäärä (pp.kk.vvvv):", kaydyt[koodi].paiva);
+                paivitaPopup(feature, layer);
+                //tallenna muutokset localStorageen
+                tallennaKaydyt();
+            });
+        }
+        const poistaNappi = document.getElementById("poistaMerkinta");
+        if (poistaNappi) {
+            poistaNappi.addEventListener("click", function() {
+                if (confirm("Haluatko poistaa merkinnän " + feature.properties.nimi + "?")) {
+                    delete kaydyt[koodi];
+                    tallennaKaydyt();
+                    paivitaKunta(feature, layer);
+                    paivitaLaskuri();
+                }
+            });
+        }
+    }); 
     //avaa popupin kun hiiri menee päälle
     layer.on("mouseover", function() {
         layer.openPopup();
@@ -110,15 +136,12 @@ function alustaKunta(feature, layer) {
             if (confirm("Merkitäänkö " + feature.properties.nimi + " käydyksi?")) {
                 kaydyt[koodi] = {
                 paiva: new Date().toLocaleDateString("fi-FI")}
-            }
-        } else {
-            if (confirm("Haluatko poistaa merkinnän " + feature.properties.nimi + "?")) {
-                delete kaydyt[koodi];
+                tallennaKaydyt();
+                //paivita varit ja popup
+                paivitaKunta(feature, layer);
+                paivitaLaskuri();
             }
         }
-        tallennaKaydyt();
-        paivitaKunta(feature, layer);
-        paivitaLaskuri();
     });
 }
 
